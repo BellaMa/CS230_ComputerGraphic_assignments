@@ -1,0 +1,156 @@
+--------------------------------------
+shader
+--------------------------------------
+1. Phong_Shader::
+Shade_Surface(){}
+
+This function will make the picture look like a 3D picture without giving globes any shadow or reflections.
+
+If not considering shadows,
+each pixel's color will be determined by ambient lighting compoent + diffuse lighting compoent + specular lighting compoent.
+
+If considering shadows,
+then for any pixel that shows shadows,
+its color will only be determined by ambient lighting compoent;
+otherwise, pixels' color is the combination effects of three lighting compoents.
+
+To compute each lighting compoents:
+
+I_ambend = ambient_compoent * lighting;
+
+I_diffuse = diffuse_compoent * lighting * the cosine of the angle between lighting and normal vector at the intersection point;
+******
+It will be zero if the angle is greater than 90 degree.
+
+I_specular = specular_compoent * lighting * some power of the cosine of the angle between the reflected light and viewing ray;
+******
+ It will be zero if the angle is greater than 90 degree.
+******
+ Another way for the angle is to compute the angle between the vector h and the normal vector at the intersection point. h (normalized) is between lighting and viewing. This way, however will result in a larger specular area due to the angle is greater.
+
+
+******
+Sometimes there will be many dark spots on the globes. To avoid this, add a small value to the shadow ray's starting point.
+(shadow ray from the intersection point pointing to the light source)
+
+
+
+
+2. Reflective_Shader::
+Shade_Surface
+
+This shader is almost the same as the Phong_Shader expect for the reflective viewing ray that shows reflection on the globes.
+
+There is a reflective viewing ray added at the end of this function call. It will be called recursively untill it reaches the limit of the recursive depth.
+
+The reflective viewing ray starts at the intersection point.
+******
+Add a small value to the starting point to avoid dark spots.
+
+Its direction is the same as the mirror ray of the viewing ray.
+
+
+
+
+--------------------------------------
+Objects
+--------------------------------------
+1.  Sphere::
+Intersection
+
+Compute the roots from ray-at-sphere equation.
+
+If there is no real roots, then there's no intersection ----> return false;
+
+Otherwise:
+if the smaller root is greater than 0, and the ray hasn't intersected with anything yet or although the ray has hit something, that object is further than this object, 
+then the ray intersects with this object ----> set ray's varibles accordingly and return true;
+
+For the rest possible cases, return true (the ray his something) but make no modification on the ray. 
+
+
+
+
+2.  Sphere::
+Normal
+
+The vector indicates the direction from the sphere's center to the given point.
+
+
+
+
+3. Plane::
+Intersection(Ray& ray)
+
+To determine if a point is at the given plane:
+the vector (starts from this point, and points to a given point at the given plane) is vertical to the plane's normal vector.
+
+If a ray intersects with a plane, then there exists a point at the ray that is also at the plane ----> we can solve this equition.
+
+If the equition doesn't has any solution, 
+the ray doesn't hit the plane ----> return false;
+
+Otherwise:
+if the ray hasn't hit anything before, or this is the first object it hits. ----> return true, and set the varibles from ray accordingly.
+
+If the ray hits something before it hits this object ----> return true and make no modification on ray's varibles.
+
+
+
+
+--------------------------------------
+Camera
+--------------------------------------
+1. Camera::
+World_Position
+
+The pixel's position is computed by moving the focal point alone the direction that is the same as the direction from the focal point to the pixel.
+
+
+
+
+--------------------------------------
+Render_World
+--------------------------------------
+1. Object* Render_World::
+Closest_Intersection
+
+The closest intersection of a ray is the most updated current_object stored at the ray's varible after interating all the object that interacting with the ray.
+
+
+
+
+2. Render_World::
+Render_Pixel
+
+initial viewing ray starts from the camera's position 
+and points to the pixel's world position.
+
+
+
+
+3. Render_World::
+Cast_Ray
+
+If the ray hits something, and the ray hasn't reached its recusion limit, the color would be determined by shader.
+
+Otherwise, the color would be the background color.
+
+
+
+
+
+
+~~~~~~~~~~~~~~~
+Chaoyun Ma
+981244217
+~~~~~~~~~~~~~~~
+
+
+
+
+
+
+
+
+

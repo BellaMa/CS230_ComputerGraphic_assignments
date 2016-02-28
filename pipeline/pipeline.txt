@@ -1,0 +1,91 @@
+Chaoyun Ma 861244217
+
+class Vertex_3D:
+	specifies each vertex's 3 coordinates by 4 demenstions;
+	this also specifies current vertex's color.
+
+c_color:
+	first 8 bits store red
+	second 8 bits store green
+	last 8 bit store blue
+
+class Matrix
+	uses a 16 bit array to store a 4 by 4 matrix.
+	has very useful helper function --> overloaded * and =
+
+class Triangle
+	stores a triangle's three vertices
+
+current_mode is a flag for current matrix mode
+poly_mode is a flag for current polynomial's mode
+
+modelviewStack, projectionStack
+	stacks to record the history of modelview transformation matrix and projection tranformation matrix
+
+currentMatrix_pointer:
+	a pointer pointing to the current using matrix, it will change with matix mode
+
+obj_vertices
+	it contains all the vertices from each object
+
+vertices_tri
+	contians all the triangles, including the implicit triangles from a quadriangle;
+
+
+screenCoordinates():
+	translate vertices' coordinates to screen coordinates
+
+lineEquation()
+	implicit line function
+	used to compute alpha, beta, gamma
+
+function mglReadPixels:
+	for each triangles(including imlicit ones), 
+	compute the coresponding color for this triangle fragments
+	by looping over the whole screen space.
+	if the current pixel's depth is smaller than the pixel's previous depth value,
+	update this pixel's color
+
+
+
+mglBegin:
+	Set the polynomial Mode for next polynomial.
+
+mglEnd:
+	stores all the  triangles
+
+
+mglVertex3:
+	compute vertex's coordinats
+
+mglMatrixMode:
+	set current mode
+	update currentMatix_pointer
+
+mglPushMatrix:
+	push current matrix into the coresponding stack
+	update currentMatix_pointer
+
+mglPopMatrix:
+	pop current mode's stack
+	update currentMatix_pointer
+
+mglLoadIdentity:
+	unnessary for my work ^.^
+
+mglLoadMatrix:
+	unnessary for my work ^.^
+
+mglMultMatrixRight:
+	multiply the current matrix with the given one
+	update currentMatix_pointer with the result
+
+
+mglTranslate, mglRotate, mglScale:
+	update current matrix to the cooresponding transformed matrix
+
+mglFrustum, mglOrtho:
+	update current matrix to the cooresponding projection coordinats
+
+mglColor:
+	set given pixel's color
